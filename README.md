@@ -100,9 +100,9 @@ $env:DB_NAME="stratix"
 
 ```
 
-Hit .\app-env.ps1  in powershell
-1.npm run migration:generate -- ./src/migrations/Organization001
-2.npm run migration:run
+- Hit .\app-env.ps1  in powershell
+- npm run migration:generate -- ./src/migrations/MigrationName
+- npm run migration:run
 
 
         
