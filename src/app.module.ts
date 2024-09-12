@@ -33,6 +33,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { dataSourceOptionsFactory } from './config/database.config';
 import { OrganizationModule } from './organization/organization.module';
 import { LoggerMiddleware } from './middleware/logger.middleware';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { LoggerMiddleware } from './middleware/logger.middleware';
       useFactory: dataSourceOptionsFactory,
     }),
     OrganizationModule,
+    UserModule
   ],
 })
 export class AppModule implements NestModule {
