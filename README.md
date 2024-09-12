@@ -83,3 +83,26 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+
+
+## Migration
+
+- window - Create a file app-env.ps1 
+```
+$env:NODE_ENV="development"
+$env:HOST="0.0.0.0"
+$env:PORT="3000"
+$env:DB_HOST="localhost"
+$env:DB_PORT="5432"
+$env:DB_USERNAME="postgres"
+$env:DB_PASSWORD="striker"
+$env:DB_NAME="stratix"
+
+```
+
+Hit .\app-env.ps1  in powershell
+1.npm run migration:generate -- ./src/migrations/Organization001
+2.npm run migration:run
+
+
+        

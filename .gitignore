@@ -78,3 +78,8 @@ docker-compose.yml
 
 # Ignore production secrets
 secrets.json
+
+
+# windows scritp file
+/*.ps1
+app-env.ps1
