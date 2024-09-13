@@ -7,16 +7,16 @@
       }
     ],
     "routes": [
-      {
-        "src": "/(.*)",
-        "dest": "src/main.js",
-        "methods":[
-            "GET",
-            "PUT",
-            "POST",
-            "PATCH",
-            "DELETE"
-        ]
-      }
+        {
+            "src": "/(.*)",
+            "dest": "src/main.ts",
+            "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+            "headers": {
+              "Access-Control-Allow-Origin": "*", 
+              "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+              "Access-Control-Allow-Headers": "Content-Type, Authorization",
+              "Access-Control-Allow-Credentials": "true"
+            }
+        }
     ]
   }
