@@ -9,17 +9,10 @@ export const dataSourceOptionsFactory = (configService: ConfigService): DataSour
   
 
   const ssl = sslCaPath  ? {
-    ca: fs.readFileSync(path.resolve(sslCaPath)),
+    ca: fs.readFileSync(path.resolve('./src/assets/ca.crt')),
     
   } : undefined;
-
-   // Log environment variables for debugging purposes
-   console.log('DB_HOST:', configService.get<string>('DB_HOST'));
-   console.log('DB_PORT:', configService.get<string>('DB_PORT'));
-   console.log('DB_USERNAME:', configService.get<string>('DB_USERNAME'));
-   console.log('DB_PASSWORD:', configService.get<string>('DB_PASSWORD'));
-   console.log('DB_NAME:', configService.get<string>('DB_NAME'));
-
+  
   return {
     type: 'postgres',
     host: configService.get<string>('DB_HOST') ,
