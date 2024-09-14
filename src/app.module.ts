@@ -3,9 +3,9 @@ import { Module, MiddlewareConsumer, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { dataSourceOptionsFactory } from './config/database.config';
-import { OrganizationModule } from './organization/organization.module';
+import { OrganizationModule } from './organizations/organization.module';
 import { LoggerMiddleware } from './middleware/logger.middleware';
-import { UserModule } from './user/user.module';
+import { UserModule } from './users/user.module';
 
 @Module({
   imports: [

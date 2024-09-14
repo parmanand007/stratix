@@ -23,8 +23,8 @@ export const dataSourceOptionsFactory = (configService: ConfigService): DataSour
     synchronize: false,
     // logging: true,
     entities: [__dirname + '/../**/*.entity{.ts,.js}'],  // Adjust the path if needed
-    migrations: [__dirname + '/../migrations/production/*{.ts,.js}'],  // Adjust the path if needed
-    // migrations: ['./migrations/*{.ts,.js}','./migrations/production/*{.ts,.js}'],  // Adjust the path if needed
+    // migrations: [__dirname + '/../migrations/production/*{.ts,.js}'],  //Production migration path
+    migrations: [__dirname + '/../migrations/*{.ts,.js}'],  // Adjust the path if needed
     migrationsRun: true,
     ssl,  // Add the SSL configuration
   };
