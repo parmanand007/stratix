@@ -105,4 +105,9 @@ $env:DB_NAME="stratix"
 - npm run migration:run
 
 
+- typeorm migration:generate -d ./dist/config/database.config.js ./src/migrations/Migration_1
+- typeorm migration:run -d ./dist/config/database.config.js
+
+
+
         

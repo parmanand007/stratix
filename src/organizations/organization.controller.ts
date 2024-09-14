@@ -31,7 +31,7 @@ export class OrganizationController {
   @ApiParam({ name: 'id', description: 'Organization ID' })
   @ApiResponse({ status: 200, description: 'Organization found' })
   @ApiResponse({ status: 404, description: 'Organization not found' })
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: number) {
     return this.organizationService.findOne(id);
   }
 
@@ -42,7 +42,7 @@ export class OrganizationController {
   @ApiResponse({ status: 200, description: 'Organization updated successfully' })
   @ApiResponse({ status: 400, description: 'Invalid data' })
   @ApiResponse({ status: 404, description: 'Organization not found' })
-  update(@Param('id') id: string, @Body() updateOrganizationDto: UpdateOrganizationDto) {
+  update(@Param('id') id: number, @Body() updateOrganizationDto: UpdateOrganizationDto) {
     return this.organizationService.update(id, updateOrganizationDto);
   }
 

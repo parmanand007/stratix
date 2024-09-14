@@ -32,7 +32,7 @@ export class UserController {
   @ApiParam({ name: 'id', description: 'User ID' })
   @ApiResponse({ status: 200, description: 'User found' })
   @ApiResponse({ status: 404, description: 'User not found' })
-  async findOne(@Param('id') id: string): Promise<User> {
+  async findOne(@Param('id') id: number): Promise<User> {
     return this.userService.getUserById(id);
   }
 
@@ -43,7 +43,7 @@ export class UserController {
   @ApiResponse({ status: 200, description: 'User updated successfully' })
   @ApiResponse({ status: 400, description: 'Invalid data' })
   @ApiResponse({ status: 404, description: 'User not found' })
-  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto): Promise<User> {
+  async update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto): Promise<User> {
     return this.userService.updateUser(id, updateUserDto);
   }
 
@@ -53,7 +53,7 @@ export class UserController {
   @ApiParam({ name: 'id', description: 'User ID' })
   @ApiResponse({ status: 204, description: 'User deleted successfully' })
   @ApiResponse({ status: 404, description: 'User not found' })
-  async remove(@Param('id') id: string): Promise<void> {
+  async remove(@Param('id') id: number): Promise<void> {
     return this.userService.deleteUser(id);
   }
 }

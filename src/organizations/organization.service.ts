@@ -30,16 +30,20 @@ export class OrganizationService {
     });
   }
 
-  async findOne(id: string): Promise<Organization> {
+  async findOne(id: number): Promise<Organization> {
     return this.organizationRepository.findOne({ where: { id } });
   }
 
-  async update(id: string, updateOrganizationDto: UpdateOrganizationDto): Promise<Organization> {
+  async update(id: number, updateOrganizationDto: UpdateOrganizationDto): Promise<Organization> {
     await this.organizationRepository.update(id, updateOrganizationDto);
     return this.organizationRepository.findOne({ where: { id } });
   }
 
   async remove(id: string): Promise<void> {
     await this.organizationRepository.delete(id);
+  }
+
+  async findByDomain(domain: string): Promise<Organization> {
+    return this.organizationRepository.findOne({ where: { domain } });
   }
 }

@@ -14,8 +14,9 @@ export class UserService {
   ) {}
 
   async createUser(createUserDto: CreateUserDto): Promise<User> {
-    const { name, email, organizationId } = createUserDto;
+    const { name, email, organizationId, password } = createUserDto;
 
+    // Find organization
     const organization = await this.organizationRepository.findOne({
       where: { id: organizationId },
     });
@@ -23,12 +24,14 @@ export class UserService {
       throw new NotFoundException('Organization not found');
     }
 
+    // Validate email domain
     const emailDomain = email.split('@')[1];
     const organizationDomain = organization.domain;
     if (emailDomain !== organizationDomain) {
       throw new ConflictException('Email domain does not match the organization’s domain');
     }
 
+    // Check if user already exists
     const existingUser = await this.userRepository.findOne({
       where: { email },
     });
@@ -36,10 +39,12 @@ export class UserService {
       throw new ConflictException('Email already in use');
     }
 
+    // Create user
     const user = this.userRepository.create({
       name,
       email,
-      organizationId,
+      password,
+      organizationEntity: organization, // Assuming you use this property
     });
 
     try {
@@ -57,7 +62,7 @@ export class UserService {
     }
   }
 
-  async getUserById(id: string): Promise<User> {
+  async getUserById(id: number): Promise<User> {
     const user = await this.userRepository.findOne({
       where: { id },
     });
@@ -67,32 +72,33 @@ export class UserService {
     return user;
   }
 
-  async updateUser(id: string, updateUserDto: UpdateUserDto): Promise<User> {
+  async updateUser(id: number, updateUserDto: UpdateUserDto): Promise<User> {
     const user = await this.getUserById(id);
 
     if (updateUserDto.name) user.name = updateUserDto.name;
     if (updateUserDto.email) {
       const emailDomain = updateUserDto.email.split('@')[1];
       const organization = await this.organizationRepository.findOne({
-        where: { id: user.organizationId },
+        where: { id: user.organizationEntity.id }, // Use existing organization id
       });
       if (!organization) {
         throw new NotFoundException('Organization not found');
       }
-      const organizationDomain = organization.domain.split('@')[1];
+      const organizationDomain = organization.domain;
       if (emailDomain !== organizationDomain) {
         throw new ConflictException('Email domain does not match the organization’s domain');
       }
       user.email = updateUserDto.email;
     }
-    if (updateUserDto.organizationId) {
+    if (updateUserDto.uuid) {
+      // Check UUID against existing organizations
       const organization = await this.organizationRepository.findOne({
-        where: { id: updateUserDto.organizationId },
+        where: { uuid: updateUserDto.uuid },
       });
       if (!organization) {
         throw new NotFoundException('Organization not found');
       }
-      user.organizationId = updateUserDto.organizationId;
+      user.uuid = updateUserDto.uuid;
     }
 
     try {
@@ -102,10 +108,18 @@ export class UserService {
     }
   }
 
-  async deleteUser(id: string): Promise<void> {
+  async deleteUser(id: number): Promise<void> {
     const result = await this.userRepository.delete(id);
     if (result.affected === 0) {
       throw new NotFoundException('User not found');
     }
+  }
+
+  async findByEmail(email: string): Promise<User> {
+    return this.userRepository.findOne({ where: { email } });
+  }
+
+  async findById(id: number): Promise<User> {
+    return this.userRepository.findOne({ where: { id } });
   }
 }

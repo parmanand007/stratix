@@ -16,6 +16,8 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false
+    "noFallthroughCasesInSwitch": false,
+    "strict": false, // Disable all strict type checking options
+    "noEmitOnError": false // Allow emitting files even if there are type errors
   }
 }

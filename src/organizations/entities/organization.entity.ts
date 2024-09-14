@@ -3,11 +3,14 @@ import { User } from 'src/users/entities/user.entity';
 
 @Entity()
 export class Organization {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @PrimaryGeneratedColumn()
+  id: number; // Integer ID
 
   @Column()
   name: string;
+
+  @Column({ type: 'uuid', unique: true })
+  uuid: string;
 
   @Column({ unique: true })
   domain: string; // This represents the domain for the organization

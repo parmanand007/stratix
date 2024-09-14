@@ -1,10 +1,13 @@
-import { Controller, Post, Body, Delete } from '@nestjs/common';
+import { Controller, Post, Body, Delete, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginUserDto } from './dto/login-user.dto';
 import { SignupUserDto } from './dto/signup-user.dto';
-import { User } from 'src/users/entities/user.entity';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { User } from '../users/entities/user.entity';
+import { JwtAuthGuard } from './jwt-auth.gaurd';
+import { GetUser } from './decorators/get-user.decorator';
 
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -12,9 +15,9 @@ export class AuthController {
   @Post('login')
   @ApiOperation({ summary: 'Login a user by email and verify domain' })
   @ApiResponse({ status: 200, description: 'User successfully logged in.' })
-  @ApiResponse({ status: 404, description: 'User or organization not found' })
-  @ApiResponse({ status: 409, description: 'Email domain does not match any organization domain' })
-  async loginUser(@Body() loginUserDto: LoginUserDto): Promise<User> {
+  @ApiResponse({ status: 404, description: 'User not found' })
+  @ApiResponse({ status: 401, description: 'Invalid credentials' })
+  async loginUser(@Body() loginUserDto: LoginUserDto): Promise<{ accessToken: string }> {
     return this.authService.loginUser(loginUserDto);
   }
 
@@ -26,10 +29,11 @@ export class AuthController {
     return this.authService.signupUser(signupUserDto);
   }
 
-  @Delete('logout')
-  @ApiOperation({ summary: 'Logout a user' })
-  @ApiResponse({ status: 200, description: 'User successfully logged out.' })
-  async logoutUser(@Body('userId') userId: string): Promise<void> {
-    return this.authService.logoutUser(userId);
-  }
+//   @Delete('logout')
+//   @ApiOperation({ summary: 'Logout a user' })
+//   @ApiResponse({ status: 200, description: 'User successfully logged out.' })
+//   @UseGuards(JwtAuthGuard)
+//   async logoutUser(@GetUser() user: User): Promise<void> {
+//     return this.authService.logoutUser(user.id);
+//   }
 }

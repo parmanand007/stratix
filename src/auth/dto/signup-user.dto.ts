@@ -1,16 +1,17 @@
-import { IsString, IsEmail, IsUUID } from 'class-validator';
+import { IsString, IsEmail, MinLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class SignupUserDto {
-  @ApiProperty({ example: 'john.doe', description: 'Name of the user' })
+  @ApiProperty({ example: 'John Doe', description: 'The name of the user' })
   @IsString()
   readonly name: string;
 
-  @ApiProperty({ example: 'john.doe@acme.com', description: 'Email of the user' })
+  @ApiProperty({ example: 'john.doe@example.com', description: 'The email of the user' })
   @IsEmail()
   readonly email: string;
 
-  @ApiProperty({ example: 'b1b9cf28-4e3f-4b9c-91d4-1c684a99e6ef', description: 'Organization ID' })
-  @IsUUID()
-  readonly organizationId: string;
+  @ApiProperty({ example: 'StrongPassword123', description: 'The password of the user' })
+  @IsString()
+  @MinLength(6)
+  readonly password: string;
 }

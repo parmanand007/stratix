@@ -1,70 +1,65 @@
-import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { User } from 'src/users/entities/user.entity';
-import { Organization } from 'src/organizations/entities/organization.entity';
-import { LoginUserDto } from './dto/login-user.dto';
+import { Injectable, UnauthorizedException, ConflictException, NotFoundException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { OrganizationService } from '../organizations/organization.service';
 import { SignupUserDto } from './dto/signup-user.dto';
+import { LoginUserDto } from './dto/login-user.dto';
+import * as bcrypt from 'bcrypt';
+import { User } from '../users/entities/user.entity';
+import { UserService } from '../users/user.service';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectRepository(User)
-    private userRepository: Repository<User>,
-    @InjectRepository(Organization)
-    private organizationRepository: Repository<Organization>,
+    private readonly userService: UserService,
+    private readonly organizationService: OrganizationService,
+    private readonly jwtService: JwtService,
   ) {}
 
-  async loginUser(loginUserDto: LoginUserDto): Promise<User> {
-    const { email } = loginUserDto;
-    const domainFromEmail = email.split('@')[1];
+  async signupUser(signupUserDto: SignupUserDto): Promise<User> {
+    const { email, password, name } = signupUserDto;
+    const domain = email.split('@')[1];
 
-    const organization = await this.organizationRepository.findOne({
-      where: { domain: domainFromEmail },
-    });
-
+    // Fetch organization by domain
+    const organization = await this.organizationService.findByDomain(domain);
     if (!organization) {
-      throw new NotFoundException('No organization found for the provided email domain');
+      throw new ConflictException('Email domain does not match organization domain');
     }
 
-    const user = await this.userRepository.findOne({
-      where: { email, organizationId: organization.id },
+    // Create user with organization entity instead of organizationId
+    const user = this.userService.createUser({
+      name,
+      email,
+      password,
+      organizationId: organization.id, // Set the organization entity directly
     });
-
-    if (!user) {
-      throw new NotFoundException('User not found for the provided email');
-    }
 
     return user;
   }
 
-  async signupUser(signupUserDto: SignupUserDto): Promise<User> {
-    const { email, organizationId } = signupUserDto;
-    const domainFromEmail = email.split('@')[1];
+  async loginUser(loginUserDto: LoginUserDto): Promise<{ accessToken: string }> {
+    const { email, password } = loginUserDto;
 
-    const organization = await this.organizationRepository.findOne({
-      where: { id: organizationId },
-    });
-
-    if (!organization || domainFromEmail !== organization.domain) {
-      throw new ConflictException('Email domain does not match organization domain');
+    // Find user by email
+    const user = await this.userService.findByEmail(email);
+    if (!user) {
+      throw new NotFoundException('User not found');
     }
 
-    // Check if user already exists
-    const existingUser = await this.userRepository.findOne({
-      where: { email, organizationId },
-    });
-
-    if (existingUser) {
-      throw new ConflictException('User with this email already exists in the organization');
+    // Check if password matches
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      throw new UnauthorizedException('Invalid credentials');
     }
 
-    const user = this.userRepository.create(signupUserDto);
-    return this.userRepository.save(user);
+    // Create JWT token
+    const payload = { sub: user.id };
+    const accessToken = this.jwtService.sign(payload);
+
+    return { accessToken };
   }
 
   async logoutUser(userId: string): Promise<void> {
-    // Implement logout logic if needed (e.g., invalidate session or token)
-    // For now, just a placeholder
+    // Implement your logout logic here
+    // For JWT, typically you would handle this on the client side by deleting the token
   }
 }

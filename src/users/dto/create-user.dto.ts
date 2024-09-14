@@ -1,4 +1,4 @@
-import { IsString, IsEmail, IsUUID, IsNotEmpty } from 'class-validator';
+import { IsString, IsEmail, IsInt, IsNotEmpty, IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateUserDto {
@@ -11,7 +11,12 @@ export class CreateUserDto {
   @IsNotEmpty()
   readonly email: string;
 
-  @ApiProperty({ example: '550e8400-e29b-41d4-a716-446655440000', description: 'The organization ID the user belongs to' })
-  @IsUUID('4')
-  readonly organizationId: string;
+  @ApiProperty({ example: 1, description: 'The ID of the organization the user belongs to' })
+  @IsInt()
+  readonly organizationId: number; // Use integer ID for the organization
+
+  @ApiProperty({ example: 'password123', description: 'The password for the user', required: false })
+  @IsOptional()
+  @IsString()
+  readonly password?: string; // Optional password field
 }
