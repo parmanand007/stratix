@@ -12,6 +12,14 @@ export const dataSourceOptionsFactory = (configService: ConfigService): DataSour
     ca: fs.readFileSync(path.resolve('./src/assets/ca.crt')),
     
   } : undefined;
+
+  // Determine the environment
+  const isProduction = configService.get<string>('NODE_ENV') === 'production';
+
+  // Set migration paths based on environment
+  const migrations = isProduction 
+    ? [__dirname + '/../migrations/production/*{.ts,.js}']
+    : [__dirname + '/../migrations/development/*{.ts,.js}'];
   
   return {
     type: 'postgres',
@@ -23,8 +31,7 @@ export const dataSourceOptionsFactory = (configService: ConfigService): DataSour
     synchronize: false,
     // logging: true,
     entities: [__dirname + '/../**/*.entity{.ts,.js}'],  // Adjust the path if needed
-    migrations: [__dirname + '/../migrations/production/*{.ts,.js}'],  // Adjust the path if needed
-    // migrations: ['./migrations/*{.ts,.js}','./migrations/production/*{.ts,.js}'],  // Adjust the path if needed
+    migrations,
     migrationsRun: true,
     ssl,  // Add the SSL configuration
   };
