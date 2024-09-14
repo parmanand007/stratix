@@ -20,13 +20,6 @@ export class OrganizationController {
     return this.organizationService.create(createOrganizationDto);
   }
 
-  // @Get()
-  // @ApiOperation({ summary: 'Get all organizations' })
-  // @ApiResponse({ status: 200, description: 'List of organizations' })
-  // findAll(@Paginate() query: PaginateQuery): Promise<Paginated<Organization>> {
-  //   return this.organizationService.findAll(query);
-  // }
-
   @Get()
   @PaginatedSwaggerDocs(Organization, USER_PAGINATION_CONFIG)
   async findAll(@Paginate() query: PaginateQuery): Promise<Paginated<Organization>> {

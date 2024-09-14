@@ -6,7 +6,7 @@ export class CreateOrganizationDto {
   @IsString()
   readonly name: string;
 
-  @ApiProperty({ example: 'info@acme.com', description: 'The email of the organization' })
-  @IsEmail()
-  readonly email: string;
+  @ApiProperty({ example: 'acme.com', description: 'The domain of the organization' })
+  @IsString()
+  readonly domain: string; // Use domain instead of email
 }
