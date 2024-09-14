@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { Organization } from './entities/organization.entity';
 import { CreateOrganizationDto } from './dto/create-organization.dto';
 import { UpdateOrganizationDto } from './dto/update-organization.dto';
+import { PaginateQuery, Paginated, paginate } from 'nestjs-paginate';
 
 @Injectable()
 export class OrganizationService {
@@ -18,8 +19,15 @@ export class OrganizationService {
     return this.organizationRepository.save(organization);
   }
 
-  async findAll(): Promise<Organization[]> {
-    return this.organizationRepository.find();
+  async findAll(query: PaginateQuery): Promise<Paginated<Organization>> {
+    return paginate(query, this.organizationRepository, {
+      sortableColumns: ['name', 'domain'],
+      searchableColumns: ['name', 'domain'],
+      defaultSortBy: [['name', 'ASC']],
+      filterableColumns: {
+        status: true,
+      },
+    });
   }
 
   async findOne(id: string): Promise<Organization> {

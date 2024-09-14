@@ -1,9 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete} from '@nestjs/common';
 import { OrganizationService } from './organization.service';
 import { CreateOrganizationDto } from './dto/create-organization.dto';
 import { UpdateOrganizationDto } from './dto/update-organization.dto';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
-
+import { Paginate, PaginateQuery, Paginated } from 'nestjs-paginate';
+import { Organization } from './entities/organization.entity';
+import { PaginatedSwaggerDocs,USER_PAGINATION_CONFIG  } from '../common/swagger/pagination.swagger';
 @ApiTags('organizations')
 @Controller('organizations')
 export class OrganizationController {
@@ -18,11 +20,17 @@ export class OrganizationController {
     return this.organizationService.create(createOrganizationDto);
   }
 
+  // @Get()
+  // @ApiOperation({ summary: 'Get all organizations' })
+  // @ApiResponse({ status: 200, description: 'List of organizations' })
+  // findAll(@Paginate() query: PaginateQuery): Promise<Paginated<Organization>> {
+  //   return this.organizationService.findAll(query);
+  // }
+
   @Get()
-  @ApiOperation({ summary: 'Get all organizations' })
-  @ApiResponse({ status: 200, description: 'List of organizations' })
-  findAll() {
-    return this.organizationService.findAll();
+  @PaginatedSwaggerDocs(Organization, USER_PAGINATION_CONFIG)
+  async findAll(@Paginate() query: PaginateQuery): Promise<Paginated<Organization>> {
+    return this.organizationService.findAll(query);
   }
 
   @Get(':id')
