@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, Generated } from 'typeorm';
 import { User } from 'src/users/entities/user.entity';
 
 @Entity()
@@ -10,6 +10,7 @@ export class Organization {
   name: string;
 
   @Column({ type: 'uuid', unique: true })
+  @Generated('uuid') 
   uuid: string;
 
   @Column({ unique: true })

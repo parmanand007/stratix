@@ -1,5 +1,5 @@
 import { Organization } from 'src/organizations/entities/organization.entity';
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, Unique, CreateDateColumn, UpdateDateColumn, BeforeInsert } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, Unique, CreateDateColumn, UpdateDateColumn, BeforeInsert, Generated } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 
 @Entity()
@@ -13,6 +13,7 @@ export class User {
   name: string;
 
   @Column({ type: 'uuid', unique: true })
+  @Generated('uuid') 
   uuid: string;
 
   @Column({ unique: true })

@@ -50,6 +50,7 @@ export class UserService {
     try {
       return await this.userRepository.save(user);
     } catch (error) {
+      console.log(error,"===================")
       throw new InternalServerErrorException('Failed to create user');
     }
   }
