@@ -1,13 +1,14 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
-import { PassportModule } from '@nestjs/passport';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthService } from './auth.service';
-import { JwtStrategy } from './jwt.strategy';
+import { JwtStrategy } from '../jwt/jwt.strategy'; // Ensure this path is correct
 import { UserModule } from '../users/user.module';
 import { OrganizationModule } from '../organizations/organization.module';
 import { AuthController } from './auth.controller';
-import { RedisModule } from '@liaoliaots/nestjs-redis';
+import { RedisModule } from './redis.module';
+import { PassportModule } from '@nestjs/passport';
+import { JwtAuthGuard } from 'src/jwt/jwt-auth.gaurd';
 import { TokenBlacklistService } from './token-blacklist.service';
 
 @Module({
@@ -18,25 +19,15 @@ import { TokenBlacklistService } from './token-blacklist.service';
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET'),
-        signOptions: { expiresIn: '60m' },
+        signOptions: { expiresIn: '60m' }, // Adjust expiration as necessary
       }),
     }),
+    forwardRef(() => OrganizationModule),
     UserModule,
-    OrganizationModule,
-    ConfigModule,
-    RedisModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        config: {
-          host: configService.get<string>('REDIS_HOST'),
-          port: parseInt(configService.get<string>('REDIS_PORT'), 10),
-        },
-      }),
-    }),
+    RedisModule,
   ],
-  providers: [AuthService, JwtStrategy, TokenBlacklistService],
+  providers: [AuthService, JwtStrategy, TokenBlacklistService, JwtAuthGuard],
   controllers: [AuthController],
-  exports: [AuthService],
+  exports: [AuthService, JwtStrategy, TokenBlacklistService, JwtAuthGuard,JwtModule], // Export JwtAuthGuard if needed in other modules
 })
 export class AuthModule {}

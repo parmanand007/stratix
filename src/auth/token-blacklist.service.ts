@@ -1,20 +1,18 @@
-import { Injectable } from '@nestjs/common';
-import { RedisService } from '@liaoliaots/nestjs-redis';
+import { Injectable, Inject } from '@nestjs/common';
+import Redis from 'ioredis';
 
 @Injectable()
 export class TokenBlacklistService {
-  private readonly redisClient;
+  constructor(
+    @Inject('REDIS_CLIENT') private readonly redisClient: Redis,
+  ) {}
 
-  constructor(private readonly redisService: RedisService) {
-    this.redisClient = this.redisService.getClient();
-  }
-
-  async blacklistToken(token: string, expiration: number): Promise<void> {
-    await this.redisClient.set(token, 'blacklisted', 'EX', expiration);
-  }
-
-  async isBlacklisted(token: string): Promise<boolean> {
+  async isTokenBlacklisted(token: string): Promise<boolean> {
     const result = await this.redisClient.get(token);
     return result === 'blacklisted';
+  }
+
+  async addTokenToBlacklist(token: string, expiryInSeconds: number): Promise<void> {
+    await this.redisClient.set(token, 'blacklisted', 'EX', expiryInSeconds);
   }
 }

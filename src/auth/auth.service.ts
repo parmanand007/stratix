@@ -62,14 +62,18 @@ export class AuthService {
   }
 
   async logoutUser(token: string): Promise<void> {
-    // Get the expiration time of the token
-    const { exp } = this.jwtService.decode(token) as { exp: number };
-    
-    if (!exp) {
+    // Decode the token to get the expiration time
+    const decodedToken = this.jwtService.decode(token) as { exp?: number };
+
+    if (!decodedToken || !decodedToken.exp) {
       throw new UnauthorizedException('Invalid token');
     }
 
-    // Blacklist the token
-    await this.tokenBlacklistService.blacklistToken(token, exp - Math.floor(Date.now() / 1000));
-  }
+    // Calculate the expiration time in seconds from now
+    const expiryInSeconds = decodedToken.exp - Math.floor(Date.now() / 1000);
+
+    // Blacklist the token with an expiration time
+    await this.tokenBlacklistService.addTokenToBlacklist(token, expiryInSeconds);
+}
+
 }

@@ -1,11 +1,12 @@
-import { Controller, Post, Body, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, Delete, UseGuards, HttpCode, HttpStatus } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginUserDto } from './dto/login-user.dto';
 import { SignupUserDto } from './dto/signup-user.dto';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { User } from '../users/entities/user.entity';
-import { JwtAuthGuard } from './jwt-auth.gaurd';
+import { JwtAuthGuard } from '../jwt/jwt-auth.gaurd';
 import { GetUser } from './decorators/get-user.decorator';
+import { LogoutUserDto } from './dto/logout-user.dto';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -29,11 +30,14 @@ export class AuthController {
     return this.authService.signupUser(signupUserDto);
   }
 
-//   @Delete('logout')
-//   @ApiOperation({ summary: 'Logout a user' })
-//   @ApiResponse({ status: 200, description: 'User successfully logged out.' })
-//   @UseGuards(JwtAuthGuard)
-//   async logoutUser(@GetUser() user: User): Promise<void> {
-//     return this.authService.logoutUser(user.id);
-//   }
+  @Post('logout')
+  @HttpCode(HttpStatus.OK) // Set status code to 200
+  @ApiOperation({ summary: 'Logout a user' })
+  @ApiBody({ type: LogoutUserDto, description: 'The token to invalidate' })
+  @ApiResponse({ status: 200, description: 'Successfully logged out', type: String }) // Updated to reflect response
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  async logout(@Body() logoutUserDto: LogoutUserDto): Promise<{ message: string }> {
+    await this.authService.logoutUser(logoutUserDto.token);
+    return { message: 'Successfully logged out' }; // Return a response with a message
+  }
 }
