@@ -6,6 +6,7 @@ import { LoginUserDto } from './dto/login-user.dto';
 import * as bcrypt from 'bcrypt';
 import { User } from '../users/entities/user.entity';
 import { UserService } from '../users/user.service';
+import { TokenBlacklistService } from './token-blacklist.service';
 
 @Injectable()
 export class AuthService {
@@ -13,6 +14,7 @@ export class AuthService {
     private readonly userService: UserService,
     private readonly organizationService: OrganizationService,
     private readonly jwtService: JwtService,
+    private readonly tokenBlacklistService: TokenBlacklistService,
   ) {}
 
   async signupUser(signupUserDto: SignupUserDto): Promise<User> {
@@ -51,15 +53,23 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
+
     // Create JWT token
-    const payload = { sub: user.id };
+    const payload = { sub: user.id,email: user.email };
     const accessToken = this.jwtService.sign(payload);
 
     return { accessToken };
   }
 
-  async logoutUser(userId: string): Promise<void> {
-    // Implement your logout logic here
-    // For JWT, typically you would handle this on the client side by deleting the token
+  async logoutUser(token: string): Promise<void> {
+    // Get the expiration time of the token
+    const { exp } = this.jwtService.decode(token) as { exp: number };
+    
+    if (!exp) {
+      throw new UnauthorizedException('Invalid token');
+    }
+
+    // Blacklist the token
+    await this.tokenBlacklistService.blacklistToken(token, exp - Math.floor(Date.now() / 1000));
   }
 }

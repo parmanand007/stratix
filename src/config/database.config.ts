@@ -13,7 +13,11 @@ export const dataSourceOptionsFactory = (configService: ConfigService): DataSour
   const ssl = sslCaPath && isProduction ? {
     ca: fs.readFileSync(path.resolve('./src/assets/ca.crt')),
     
-  } : undefined;
+  } : undefined;  
+
+
+
+
 
   // Set migration paths based on environment
   const migrations = isProduction 
