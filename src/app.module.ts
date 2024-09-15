@@ -6,6 +6,8 @@ import { dataSourceOptionsFactory } from './config/database.config';
 import { OrganizationModule } from './organizations/organization.module';
 import { LoggerMiddleware } from './middleware/logger.middleware';
 import { UserModule } from './users/user.module';
+import { AuthModule } from './auth/auth.module';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -15,8 +17,10 @@ import { UserModule } from './users/user.module';
       inject: [ConfigService],
       useFactory: dataSourceOptionsFactory,
     }),
+    AuthModule,
     OrganizationModule,
-    UserModule
+    UserModule,
+    
   ],
 })
 export class AppModule implements NestModule {
