@@ -12,6 +12,7 @@ import Redis from 'ioredis';
         const redis = new Redis({
           host: configService.get<string>('REDIS_HOST'),
           port: parseInt(configService.get<string>('REDIS_PORT'), 10),
+          password: configService.get<string>('REDIS_PASSWORD')
         });
         return redis;
       },

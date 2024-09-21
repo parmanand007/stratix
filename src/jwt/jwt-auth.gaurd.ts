@@ -10,7 +10,6 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     private tokenBlacklistService: TokenBlacklistService,
   ) {
     console.log('JwtService:', jwtService); // Check if JwtService is injected
-  // console.log('TokenBlacklistService:', tokenBlacklistService); 
     super();
   }
 
