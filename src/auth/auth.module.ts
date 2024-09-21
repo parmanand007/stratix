@@ -8,8 +8,9 @@ import { OrganizationModule } from '../organizations/organization.module';
 import { AuthController } from './auth.controller';
 import { RedisModule } from './redis.module';
 import { PassportModule } from '@nestjs/passport';
-import { JwtAuthGuard } from 'src/jwt/jwt-auth.gaurd';
+// import { JwtAuthGuard } from 'src/jwt/jwt-auth.gaurd';
 import { TokenBlacklistService } from './token-blacklist.service';
+import { JwtAuthGuard } from '../jwt/jwt-auth.gaurd';
 
 @Module({
   imports: [

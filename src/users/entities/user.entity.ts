@@ -1,6 +1,7 @@
-import { Organization } from 'src/organizations/entities/organization.entity';
+// import { Organization } from 'src/organizations/entities/organization.entity';
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, Unique, CreateDateColumn, UpdateDateColumn, BeforeInsert, Generated } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import { Organization } from '../../organizations/entities/organization.entity';
 
 @Entity()
 @Unique(['email'])
