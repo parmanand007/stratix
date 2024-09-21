@@ -101,8 +101,14 @@ $env:DB_NAME="stratix"
 ```
 
 - Hit .\app-env.ps1  in powershell
+- Delete dist folder
 - npm run migration:generate -- ./src/migrations/MigrationName
 - npm run migration:run
+
+
+- typeorm migration:generate -d ./dist/config/database.config.js ./src/migrations/Migration_1
+- typeorm migration:run -d ./dist/config/database.config.js
+
 
 
         

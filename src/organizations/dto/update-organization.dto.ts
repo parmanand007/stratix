@@ -1,4 +1,4 @@
-import { IsString, IsEmail, IsOptional } from 'class-validator';
+import { IsString, IsOptional } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class UpdateOrganizationDto {
@@ -7,8 +7,8 @@ export class UpdateOrganizationDto {
   @IsString()
   readonly name?: string;
 
-  @ApiPropertyOptional({ example: 'info@acme.com', description: 'The email of the organization' })
+  @ApiPropertyOptional({ example: 'acme.com', description: 'The domain of the organization' })
   @IsOptional()
-  @IsEmail()
-  readonly email?: string;
+  @IsString()
+  readonly domain?: string; // Use domain instead of email
 }

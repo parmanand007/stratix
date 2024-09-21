@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards} from '@nestjs/common';
 import { OrganizationService } from './organization.service';
 import { CreateOrganizationDto } from './dto/create-organization.dto';
 import { UpdateOrganizationDto } from './dto/update-organization.dto';
@@ -6,6 +6,9 @@ import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/s
 import { Paginate, PaginateQuery, Paginated } from 'nestjs-paginate';
 import { Organization } from './entities/organization.entity';
 import { PaginatedSwaggerDocs,USER_PAGINATION_CONFIG  } from '../common/swagger/pagination.swagger';
+import { JwtAuthGuard } from 'src/jwt/jwt-auth.gaurd';
+
+
 @ApiTags('organizations')
 @Controller('organizations')
 export class OrganizationController {
@@ -28,6 +31,7 @@ export class OrganizationController {
   // }
 
   @Get()
+  @UseGuards(JwtAuthGuard) 
   @PaginatedSwaggerDocs(Organization, USER_PAGINATION_CONFIG)
   async findAll(@Paginate() query: PaginateQuery): Promise<Paginated<Organization>> {
     return this.organizationService.findAll(query);
@@ -38,7 +42,7 @@ export class OrganizationController {
   @ApiParam({ name: 'id', description: 'Organization ID' })
   @ApiResponse({ status: 200, description: 'Organization found' })
   @ApiResponse({ status: 404, description: 'Organization not found' })
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: number) {
     return this.organizationService.findOne(id);
   }
 
@@ -49,7 +53,7 @@ export class OrganizationController {
   @ApiResponse({ status: 200, description: 'Organization updated successfully' })
   @ApiResponse({ status: 400, description: 'Invalid data' })
   @ApiResponse({ status: 404, description: 'Organization not found' })
-  update(@Param('id') id: string, @Body() updateOrganizationDto: UpdateOrganizationDto) {
+  update(@Param('id') id: number, @Body() updateOrganizationDto: UpdateOrganizationDto) {
     return this.organizationService.update(id, updateOrganizationDto);
   }
 

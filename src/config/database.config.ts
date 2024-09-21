@@ -7,20 +7,22 @@ export const dataSourceOptionsFactory = (configService: ConfigService): DataSour
   // Read SSL certificates paths from ConfigService
   const sslCaPath = configService.get<string>('SSL_CA_CERTIFICATES');
   
-
-  const ssl = sslCaPath  ? {
-    ca: fs.readFileSync(path.resolve('./src/assets/ca.crt')),
-    
-  } : undefined;
-
   // Determine the environment
   const isProduction = configService.get<string>('NODE_ENV') === 'production';
+
+  const ssl = sslCaPath && isProduction ? {
+    ca: fs.readFileSync(path.resolve('./src/assets/ca.crt')),
+    
+  } : undefined;  
+
+
+
+
 
   // Set migration paths based on environment
   const migrations = isProduction 
     ? [__dirname + '/../migrations/production/*{.ts,.js}']
-    : [__dirname + '/../migrations/development/*{.ts,.js}'];
-  
+    : [__dirname + '/../migrations/*{.ts,.js}'];
   return {
     type: 'postgres',
     host: configService.get<string>('DB_HOST') ,
