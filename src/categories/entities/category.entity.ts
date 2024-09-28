@@ -25,7 +25,7 @@ export class Category {
   products: Product[]; // Products belonging to this category
 
   @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  createdAt: Date; // Timestamp for when the category was created
+  createdAt: Date; // Timestamp for when the product was created
   
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
   updatedAt: Date; // Timestamp for when the category was last updated

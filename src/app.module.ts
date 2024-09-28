@@ -7,8 +7,6 @@ import { OrganizationModule } from './organizations/organization.module';
 import { LoggerMiddleware } from './middleware/logger.middleware';
 import { UserModule } from './users/user.module';
 import { AuthModule } from './auth/auth.module';
-import { JwtModule } from '@nestjs/jwt';
-import { MarketplacesModule } from './marketplaces/marketplaces.module';
 import { ProductsModule } from './products/products.module';
 import { CategoriesModule } from './categories/categories.module';
 
@@ -23,7 +21,6 @@ import { CategoriesModule } from './categories/categories.module';
     AuthModule,
     OrganizationModule,
     UserModule,
-    MarketplacesModule,
     ProductsModule,
     CategoriesModule,
     
