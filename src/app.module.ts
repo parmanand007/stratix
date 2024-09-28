@@ -7,8 +7,8 @@ import { OrganizationModule } from './organizations/organization.module';
 import { LoggerMiddleware } from './middleware/logger.middleware';
 import { UserModule } from './users/user.module';
 import { AuthModule } from './auth/auth.module';
-import { ProductsModule } from './products/products.module';
-import { CategoriesModule } from './categories/categories.module';
+import { CategoryModule } from './categories/categories.module';
+import { ProductModule } from './products/products.module';
 
 @Module({
   imports: [
@@ -21,8 +21,8 @@ import { CategoriesModule } from './categories/categories.module';
     AuthModule,
     OrganizationModule,
     UserModule,
-    ProductsModule,
-    CategoriesModule,
+    ProductModule,
+    CategoryModule,
     
   ],
 })
