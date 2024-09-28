@@ -6,7 +6,8 @@ import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/s
 import { Paginate, PaginateQuery, Paginated } from 'nestjs-paginate';
 import { Organization } from './entities/organization.entity';
 import { PaginatedSwaggerDocs,USER_PAGINATION_CONFIG  } from '../common/swagger/pagination.swagger';
-import { JwtAuthGuard } from 'src/jwt/jwt-auth.gaurd';
+import { JwtAuthGuard } from '../jwt/jwt-auth.gaurd';
+
 
 
 @ApiTags('organizations')
