@@ -1,6 +1,7 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany, Generated } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, Generated,OneToOne,JoinColumn } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { Product } from '../../products/entities/product.entity';
+import { OrganizationAddress } from './organization-address.entity';
 
 @Entity()
 export class Organization {
@@ -25,4 +26,8 @@ export class Organization {
 
   @OneToMany(() => Product, product => product.organization)
   products: Product[];
+
+  @OneToOne(() => OrganizationAddress, address => address.organization, { cascade: true })
+  @JoinColumn() // This decorator is used to indicate the owning side of the relationship.
+  address: OrganizationAddress;
 }
