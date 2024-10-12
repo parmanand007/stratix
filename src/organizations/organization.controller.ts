@@ -78,10 +78,9 @@ export class OrganizationController {
     return this.organizationService.createAddress(createAddressDto);
   }
 
-  @Get('addresses')
+  @Get('addresses/list')
   @PaginatedSwaggerDocs(Organization, USER_PAGINATION_CONFIG)
   async findAllAddresses(@Paginate() query: PaginateQuery): Promise<Paginated<OrganizationAddress>> {
-    console.log("=======start: Fetching all addresses with pagination");
     return this.organizationService.findAllAddresses(query);
   }
 
@@ -89,7 +88,6 @@ export class OrganizationController {
   @ApiResponse({ status: 200, description: 'Successfully retrieved the address.', type: OrganizationAddress })
   @ApiResponse({ status: 404, description: 'Address not found.' })
   findOneAddress(@Param('id') id: number): Promise<OrganizationAddress> {
-    console.log("===========hii")
     return this.organizationService.findOneAddress(id);
   }
 
