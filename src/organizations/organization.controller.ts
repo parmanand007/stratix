@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Put} from '@nestjs/common';
 import { OrganizationService } from './organization.service';
 import { CreateOrganizationDto } from './dto/create-organization.dto';
 import { UpdateOrganizationDto } from './dto/update-organization.dto';
@@ -7,6 +7,9 @@ import { Paginate, PaginateQuery, Paginated } from 'nestjs-paginate';
 import { Organization } from './entities/organization.entity';
 import { PaginatedSwaggerDocs,USER_PAGINATION_CONFIG  } from '../common/swagger/pagination.swagger';
 import { JwtAuthGuard } from '../jwt/jwt-auth.gaurd';
+import { CreateOrganizationAddressDto } from './dto/create-organization-address.dto';
+import { OrganizationAddress } from './entities/organization-address.entity';
+import { UpdateOrganizationAddressDto } from './dto/update-organization-address.dto';
 
 
 
@@ -65,5 +68,40 @@ export class OrganizationController {
   @ApiResponse({ status: 404, description: 'Organization not found' })
   remove(@Param('id') id: string) {
     return this.organizationService.remove(id);
+  }
+
+  // Endpoints for OrganizationAddress
+  @Post('addresses')
+  @ApiResponse({ status: 201, description: 'The address has been successfully created.', type: OrganizationAddress })
+  @ApiResponse({ status: 400, description: 'Bad Request.' })
+  createAddress(@Body() createAddressDto: CreateOrganizationAddressDto): Promise<OrganizationAddress> {
+    return this.organizationService.createAddress(createAddressDto);
+  }
+
+  @Get('addresses/list')
+  @PaginatedSwaggerDocs(Organization, USER_PAGINATION_CONFIG)
+  async findAllAddresses(@Paginate() query: PaginateQuery): Promise<Paginated<OrganizationAddress>> {
+    return this.organizationService.findAllAddresses(query);
+  }
+
+  @Get('addresses/:id')
+  @ApiResponse({ status: 200, description: 'Successfully retrieved the address.', type: OrganizationAddress })
+  @ApiResponse({ status: 404, description: 'Address not found.' })
+  findOneAddress(@Param('id') id: number): Promise<OrganizationAddress> {
+    return this.organizationService.findOneAddress(id);
+  }
+
+  @Put('addresses/:id')
+  @ApiResponse({ status: 200, description: 'The address has been successfully updated.', type: OrganizationAddress })
+  @ApiResponse({ status: 404, description: 'Address not found.' })
+  updateAddress(@Param('id') id: number, @Body() updateAddressDto: UpdateOrganizationAddressDto): Promise<OrganizationAddress> {
+    return this.organizationService.updateAddress(id, updateAddressDto);
+  }
+
+  @Delete('addresses/:id')
+  @ApiResponse({ status: 204, description: 'The address has been successfully deleted.' })
+  @ApiResponse({ status: 404, description: 'Address not found.' })
+  removeAddress(@Param('id') id: number): Promise<void> {
+    return this.organizationService.removeAddress(id);
   }
 }
