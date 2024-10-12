@@ -16,11 +16,21 @@ export class OrganizationService {
     @InjectRepository(Organization)
     private organizationRepository: Repository<Organization>,
     @InjectRepository(OrganizationAddress)
-    private readonly addressRepository: Repository<OrganizationAddress>,
+    private readonly organizationAddressRepository: Repository<OrganizationAddress>,
   ) {}
 
   async create(createOrganizationDto: CreateOrganizationDto): Promise<Organization> {
-    const organization = this.organizationRepository.create(createOrganizationDto);
+    const { addressId, ...orgData } = createOrganizationDto;
+    const organization = this.organizationRepository.create(orgData);
+
+    if (addressId) {
+      const address = await this.organizationAddressRepository.findOne({ where: { id: addressId } });
+      if (!address) {
+        throw new NotFoundException('Address not found');
+      }
+      organization.address = address;
+    }
+
     return this.organizationRepository.save(organization);
   }
 
@@ -32,16 +42,33 @@ export class OrganizationService {
       filterableColumns: {
         status: true,
       },
-    });
+    }); 
   }
 
   async findOne(id: number): Promise<Organization> {
     return this.organizationRepository.findOne({ where: { id } });
   }
 
+
   async update(id: number, updateOrganizationDto: UpdateOrganizationDto): Promise<Organization> {
-    await this.organizationRepository.update(id, updateOrganizationDto);
-    return this.organizationRepository.findOne({ where: { id } });
+    const { addressId, ...orgData } = updateOrganizationDto;
+    const organization = await this.organizationRepository.findOne({where:{id}});
+
+    if (!organization) {
+      throw new NotFoundException('Organization not found');
+    }
+
+    this.organizationRepository.merge(organization, orgData);
+
+    if (addressId) {
+      const address = await this.organizationAddressRepository.findOne({ where: { id: addressId } });
+      if (!address) {
+        throw new NotFoundException('Address not found');
+      }
+      organization.address = address;
+    }
+
+    return this.organizationRepository.save(organization);
   }
 
   async remove(id: string): Promise<void> {
@@ -54,12 +81,12 @@ export class OrganizationService {
 
   // Additional CRUD methods for OrganizationAddress
   async createAddress(createAddressDto: CreateOrganizationAddressDto): Promise<OrganizationAddress> {
-    const address = this.addressRepository.create(createAddressDto);
-    return this.addressRepository.save(address);
+    const address = this.organizationAddressRepository.create(createAddressDto);
+    return this.organizationAddressRepository.save(address);
   }
 
   async findAllAddresses(query: PaginateQuery): Promise<Paginated<OrganizationAddress>> {
-    return paginate(query, this.addressRepository, {
+    return paginate(query, this.organizationAddressRepository, {
       sortableColumns: ['street', 'city', 'state', 'postalCode'], // Change these according to your fields
       searchableColumns: ['street', 'city', 'state'], // Change these according to your fields
       defaultSortBy: [['street', 'ASC']],
@@ -71,7 +98,7 @@ export class OrganizationService {
   }
 
   async findOneAddress(id: number): Promise<OrganizationAddress> {
-    const address = await this.addressRepository.findOne({ where: { id } });
+    const address = await this.organizationAddressRepository.findOne({ where: { id } });
     if (!address) {
       throw new NotFoundException(`Address with ID ${id} not found`);
     }
@@ -80,12 +107,12 @@ export class OrganizationService {
 
   async updateAddress(id: number, updateAddressDto: UpdateOrganizationAddressDto): Promise<OrganizationAddress> {
     const address = await this.findOneAddress(id);
-    this.addressRepository.merge(address, updateAddressDto);
-    return this.addressRepository.save(address);
+    this.organizationAddressRepository.merge(address, updateAddressDto);
+    return this.organizationAddressRepository.save(address);
   }
 
   async removeAddress(id: number): Promise<void> {
     const address = await this.findOneAddress(id);
-    await this.addressRepository.remove(address);
+    await this.organizationAddressRepository.remove(address);
   }
 }
