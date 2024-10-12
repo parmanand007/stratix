@@ -1,13 +1,14 @@
 // src/products/products.service.ts
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Not, Repository } from 'typeorm';
 import { Product } from './entities/product.entity';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { User } from '../users/entities/user.entity';
 import { Organization } from '../organizations/entities/organization.entity';
 import { Category } from '../categories/entities/category.entity';
+import { paginate, PaginateConfig, Paginated, PaginateQuery } from 'nestjs-paginate';
 
 @Injectable()
 export class ProductService {
@@ -108,5 +109,26 @@ export class ProductService {
     if (result.affected === 0) {
       throw new NotFoundException(`Product with ID ${id} not found`);
     }
+  }
+
+  async getHomeProducts(userId: number, query: PaginateQuery): Promise<Paginated<Product>> {
+    // Find the user and their organization
+    const user = await this.userRepository.findOne({ where: { id: userId }, relations: ['organizationEntity'] });
+    if (!user) {
+      throw new NotFoundException(`User with ID ${userId} not found`);
+    }
+
+    // Get the products of the user's organization except the user's own products with pagination
+    const productsQueryBuilder = this.productRepository.createQueryBuilder('product')
+      .where('product.organizationId = :organizationId', { organizationId: user.organizationEntity.id })
+      .andWhere('product.userId != :userId', { userId: user.id });
+    
+    // Configure pagination
+    const config: PaginateConfig<Product> = {
+      sortableColumns: ['name'], // Specify sortable columns
+      relations: ['user', 'organization', 'category'], // Specify relations to include
+    };
+
+    return paginate(query, productsQueryBuilder,config);
   }
 }

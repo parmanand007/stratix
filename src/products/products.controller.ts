@@ -5,6 +5,7 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Product } from './entities/product.entity';
 import { ApiTags, ApiResponse } from '@nestjs/swagger';
+import { Paginate, Paginated, PaginateQuery } from 'nestjs-paginate';
 
 @ApiTags('products')
 @Controller('products')
@@ -46,5 +47,15 @@ export class ProductController {
   @ApiResponse({ status: 404, description: 'Product not found.' })
   remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
     return this.productService.remove(id);
+  }
+
+  @Get('home/:userId')
+  @ApiResponse({ status: 200, description: 'List of home products.', type: [Product] })
+  @ApiResponse({ status: 404, description: 'User not found.' })
+  async getHomeProducts(
+    @Param('userId', ParseIntPipe) userId: number,
+    @Paginate() query: PaginateQuery,
+  ): Promise<Paginated<Product>> {
+    return this.productService.getHomeProducts(userId, query);
   }
 }
