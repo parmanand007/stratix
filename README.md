@@ -102,7 +102,11 @@ $env:DB_NAME="stratix"
 
 - Hit .\app-env.ps1  in powershell
 - Delete dist folder
+# Dev
 - npm run migration:generate -- ./src/migrations/MigrationName
+- npm run migration:run
+# Prod
+- npm run migration:generate -- ./src/migrations/production/Migration_production_3
 - npm run migration:run
 
 
