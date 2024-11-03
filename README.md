@@ -116,3 +116,7 @@ $env:DB_NAME="stratix"
 
 
         
+## Testing
+- All - npx jest test
+- Specific - npx jest src/users/tests/user.controller.spec.ts
+
