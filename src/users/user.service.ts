@@ -5,6 +5,8 @@ import { User } from './entities/user.entity';
 import { Organization } from '../organizations/entities/organization.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { GetUserDto } from './dto/get-user.dto';
+import { plainToClass, plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class UserService {
@@ -62,14 +64,16 @@ export class UserService {
     }
   }
 
-  async getUserById(id: number): Promise<User> {
+  async getUserById(id: number): Promise<GetUserDto> {
     const user = await this.userRepository.findOne({
       where: { id },
+      relations: ['organizationEntity','organizationEntity.address'],
     });
     if (!user) {
       throw new NotFoundException('User not found');
     }
-    return user;
+     // Transform user entity to GetUserDto
+    return plainToInstance(GetUserDto, user)
   }
 
   async updateUser(id: number, updateUserDto: UpdateUserDto): Promise<User> {
