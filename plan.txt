@@ -1,0 +1,17 @@
+1.test cases
+ a. User - 1
+ b. Organization - 0
+ c. Product - 0
+ d. Category - 0
+ e. Auth - 0
+ f. Organization Address - 0
+ h. home products - 0
+ g.
+
+
+2. Problem - what if count of home product is zero
+ Need - list of organization which is closest to user's own organization
+ Expectation - Return products list on home page based on its location.
+               a. return user's city products if closest organization also have zero products
+               b. return user'state product if city  has zero products
+               c. return all products irrespective of user's organization
