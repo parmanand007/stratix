@@ -8,7 +8,7 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { User } from '../users/entities/user.entity';
 import { Organization } from '../organizations/entities/organization.entity';
 import { Category } from '../categories/entities/category.entity';
-import { paginate, PaginateConfig, Paginated, PaginateQuery } from 'nestjs-paginate';
+import { FilterOperator, paginate, PaginateConfig, Paginated, PaginateQuery, PaginationLimit } from 'nestjs-paginate';
 
 @Injectable()
 export class ProductService {
@@ -117,18 +117,35 @@ export class ProductService {
     if (!user) {
       throw new NotFoundException(`User with ID ${userId} not found`);
     }
+    
 
     // Get the products of the user's organization except the user's own products with pagination
     const productsQueryBuilder = this.productRepository.createQueryBuilder('product')
-      .where('product.organizationId = :organizationId', { organizationId: user.organizationEntity.id })
-      .andWhere('product.userId != :userId', { userId: user.id });
-    
-    // Configure pagination
+    .leftJoinAndSelect('product.organization', 'organization') // Left join to include all products
+    .leftJoinAndSelect('organization.address', 'address') // Left join to include address, if any
+    .leftJoinAndSelect('product.category', 'category') // Join with category
+    .where('product.organizationId = :organizationId', { organizationId: user.organizationEntity.id })
+    .andWhere('product.userId != :userId', { userId: user.id }); 
+
+
+    // Configure pagination with filterable columns
     const config: PaginateConfig<Product> = {
-      sortableColumns: ['name'], // Specify sortable columns
-      relations: ['user', 'organization', 'category'], // Specify relations to include
+      sortableColumns: ['name', 'price', 'condition', 'createdAt'], // Add sortable columns as needed
+      relations: ['user', 'organization', 'category','organization.address'], // Specify relations to include
+      filterableColumns: {
+        'organization.address.city': true,
+        'organization.address.state': true,
+        'organization.address.country': true,
+        'product.name': true,
+        'product.condition': true,
+        'product.price': [FilterOperator.GTE, FilterOperator.LTE],
+        'product.isActive': true,
+        'category.name': true,
+      },
+      defaultLimit: PaginationLimit.DEFAULT_LIMIT,
+      maxLimit: PaginationLimit.DEFAULT_MAX_LIMIT,
     };
 
-    return paginate(query, productsQueryBuilder,config);
+    return paginate(query, productsQueryBuilder, config);
   }
 }
