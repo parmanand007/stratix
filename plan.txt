@@ -11,7 +11,11 @@
 
 2. Problem - what if count of home product is zero
  Need - list of organization which is closest to user's own organization
- Expectation - Return products list on home page based on its location.
-               a. return user's city products if closest organization also have zero products
+ Expectation - Return products list on home page based on its location.  - 1
+               a. return user's city products if closest organization also have zero products - 
                b. return user'state product if city  has zero products
                c. return all products irrespective of user's organization
+
+3. 
+    Need- Api which return user's address details
+    Task- Update user get api to return address details
