@@ -24,4 +24,4 @@
    Task - User able to upload multiple image for product that he/she will going to sell
 
 5. Need - Create chat rooms when use click on Buy / Shell Button
-   Task - integrate websocket
+   Task - integrate websocket.
