@@ -9,6 +9,7 @@ import { UserModule } from './users/user.module';
 import { AuthModule } from './auth/auth.module';
 import { CategoryModule } from './categories/categories.module';
 import { ProductModule } from './products/products.module';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { ProductModule } from './products/products.module';
     UserModule,
     ProductModule,
     CategoryModule,
+    ChatModule,
     
   ],
 })
