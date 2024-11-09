@@ -1,34 +1,54 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+// chat.controller.ts
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  ParseIntPipe,
+  NotFoundException,
+} from '@nestjs/common';
+import { CreateChatRoomDto } from './dto/create-chat-room.dto';
+import { UpdateChatRoomDto } from './dto/update-chat-room.dto';
+import { ChatRoom } from './entities/chat.entity';
 import { ChatService } from './chat.service';
-import { CreateChatDto } from './dto/create-chat.dto';
-import { UpdateChatDto } from './dto/update-chat.dto';
 
-@Controller('chat')
+@Controller('chat/room')
 export class ChatController {
   constructor(private readonly chatService: ChatService) {}
 
   @Post()
-  create(@Body() createChatDto: CreateChatDto) {
-    return this.chatService.create(createChatDto);
+  async create(@Body() createChatRoomDto: CreateChatRoomDto): Promise<ChatRoom> {
+    return this.chatService.createChatRoom(createChatRoomDto);
   }
 
   @Get()
-  findAll() {
-    return this.chatService.findAll();
+  async findAll(): Promise<ChatRoom[]> {
+    console.log("============a")
+    return  this.chatService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.chatService.findOne(+id);
+  async findOne(@Param('id', ParseIntPipe) id: number): Promise<ChatRoom> {
+    const chatRoom = await this.chatService.findOne(id);
+    if (!chatRoom) {
+      throw new NotFoundException(`ChatRoom with ID ${id} not found`);
+    }
+    return chatRoom;
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateChatDto: UpdateChatDto) {
-    return this.chatService.update(+id, updateChatDto);
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateChatRoomDto: UpdateChatRoomDto,
+  ): Promise<ChatRoom> {
+    return this.chatService.update(id, updateChatRoomDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.chatService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
+    return this.chatService.remove(id);
   }
 }

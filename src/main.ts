@@ -19,13 +19,13 @@ async function bootstrap() {
     .setVersion('1.0')
     .build();
 
-  // Use the ClassSerializerInterceptor globally
-  app.useGlobalInterceptors(
-    new ClassSerializerInterceptor(app.get(Reflector), {
-      strategy: 'excludeAll', // Exclude all properties by default
-      excludeExtraneousValues: true, // Exclude values not marked with @Expose()
-    }),
-  );
+  // // Use the ClassSerializerInterceptor globally
+  // app.useGlobalInterceptors(
+  //   new ClassSerializerInterceptor(app.get(Reflector), {
+  //     strategy: 'excludeAll', // Exclude all properties by default
+  //     excludeExtraneousValues: true, // Exclude values not marked with @Expose()
+  //   }),
+  // );
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('/api', app, document, {

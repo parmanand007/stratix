@@ -25,3 +25,5 @@
 
 5. Need - Create chat rooms when use click on Buy / Shell Button
    Task - integrate websocket
+        - create entity and their crud apis
+        
