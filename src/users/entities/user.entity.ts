@@ -1,9 +1,12 @@
 // Import necessary modules and entities
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToOne, JoinColumn, 
-  Unique, CreateDateColumn, UpdateDateColumn, BeforeInsert, Generated } from 'typeorm';
+  Unique, CreateDateColumn, UpdateDateColumn, BeforeInsert, Generated, 
+  ManyToMany} from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { Organization } from '../../organizations/entities/organization.entity';
 import { Product } from '../../products/entities/product.entity';
+import { ChatMessage } from '../../chat/entities/chat-message.entity';
+import { ChatRoom } from '../../chat/entities/chat.entity';
 
 @Entity()
 @Unique(['email'])
@@ -31,6 +34,13 @@ export class User {
 
   @OneToMany(() => Product, product => product.user)
   products: Product[]; // Products owned by the user
+  
+  @OneToMany(() => ChatMessage, message => message.sender)
+  messages: ChatMessage[]; // ChatMessage
+
+   // Many-to-many relationship with ChatRoom (inverse side)
+   @ManyToMany(() => ChatRoom, (chatRoom) => chatRoom.participants)
+   chatRooms: ChatRoom[];
 
   @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date; // Timestamp for when the user was created
