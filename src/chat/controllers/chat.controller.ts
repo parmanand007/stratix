@@ -10,10 +10,10 @@ import {
   ParseIntPipe,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateChatRoomDto } from './dto/create-chat-room.dto';
-import { UpdateChatRoomDto } from './dto/update-chat-room.dto';
-import { ChatRoom } from './entities/chat.entity';
-import { ChatService } from './chat.service';
+import { CreateChatRoomDto } from '../dto/create-chat-room.dto';
+import { UpdateChatRoomDto } from '../dto/update-chat-room.dto';
+import { ChatRoom } from '../entities/chat.entity';
+import { ChatService } from '../services/chat.service';
 
 @Controller('chat/room')
 export class ChatController {
@@ -26,7 +26,6 @@ export class ChatController {
 
   @Get()
   async findAll(): Promise<ChatRoom[]> {
-    console.log("============a")
     return  this.chatService.findAll();
   }
 

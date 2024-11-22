@@ -2,12 +2,12 @@
 
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserRepository } from '../users/user.repository';
-import { CreateChatRoomDto } from './dto/create-chat-room.dto';
-import { UpdateChatRoomDto } from './dto/update-chat-room.dto';
-import { User } from '../users/entities/user.entity';
-import { ChatRoomRepository } from './chat.repository';
-import { ChatRoom } from './entities/chat.entity';
+import { UserRepository } from '../../users/user.repository';
+import { CreateChatRoomDto } from '../dto/create-chat-room.dto';
+import { UpdateChatRoomDto } from '../dto/update-chat-room.dto';
+import { User } from '../../users/entities/user.entity';
+import { ChatRoomRepository } from '../chat.repository';
+import { ChatRoom } from '../entities/chat.entity';
 import { In } from 'typeorm';
 
 @Injectable()
@@ -27,7 +27,7 @@ export class ChatService {
      const participantEntities: User[] = await this.userRepository.findBy({
       id: In(participants),
     });
-    return =  await this.chatRoomRepository.createChatRoom(name, type, participantEntities);
+    return await this.chatRoomRepository.createChatRoom(name, type, participantEntities);
     
   }
 
