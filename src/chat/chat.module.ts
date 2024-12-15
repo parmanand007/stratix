@@ -11,13 +11,14 @@ import { User } from '../users/entities/user.entity';
 import { ChatMessage } from './entities/chat-message.entity';
 import { ChatMessageController } from './controllers/chat-message.controller';
 import { ChatMessageService } from './services/chat-message.service';
+import { ChatGateway } from './chat.gateway';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([ChatRoom,User, UserRepository,ChatMessage]), // Register repositories
   ],
   controllers: [ChatController,ChatMessageController],
-  providers: [ChatService,ChatRoomRepository, UserRepository,ChatMessageService],
+  providers: [ChatService,ChatRoomRepository, UserRepository,ChatMessageService,ChatGateway],
   exports: [ChatService,ChatMessageService], // Export ChatService if other modules need to use it
 })
 export class ChatModule {}
