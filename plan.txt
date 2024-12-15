@@ -24,6 +24,8 @@
    Task - User able to upload multiple image for product that he/she will going to sell
 
 5. Need - Create chat rooms when use click on Buy / Shell Button
-   Task - integrate websocket
+   Task - integrate websocket  - 1
         - create entity and their crud apis
         
+6 Need - message send in chatroom is saved using messaging queue or caching strategies
+  Task - either user messaging queue like kafka or caching mechanism like kafka
